@@ -2,10 +2,30 @@
 
 import { useState, useEffect } from "react";
 import { CourseCard } from "@/components/dashboard/CourseCard";
-import { COURSE_CATEGORIES } from "@/lib/coursesData";
+import { COURSE_CATEGORIES, COURSES } from "@/lib/coursesData";
 import { api } from "@/lib/api/client";
 import { BookOpen } from "lucide-react";
 import type { Course } from "@/types";
+
+const THUMBNAILS: Record<string, string> = {
+  Programming: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400",
+  "Web Development": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400",
+  "Data Science": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400",
+  "AI & ML": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400",
+  DevOps: "https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=400",
+  Design: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400",
+};
+
+function getCoursesWithThumbnails(list: Course[], category?: string): Course[] {
+  let filtered = list.map((c) => ({
+    ...c,
+    thumbnail: THUMBNAILS[c.category] || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400",
+  }));
+  if (category && category !== "All") {
+    filtered = filtered.filter((c) => c.category === category);
+  }
+  return filtered;
+}
 
 export default function CoursesPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -17,7 +37,10 @@ export default function CoursesPage() {
     api.courses
       .list(selectedCategory)
       .then((res) => setCourses(res.courses as unknown as Course[]))
-      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load courses"))
+      .catch(() => {
+        setError("");
+        setCourses(getCoursesWithThumbnails(COURSES as Course[], selectedCategory));
+      })
       .finally(() => setLoading(false));
   }, [selectedCategory]);
 
