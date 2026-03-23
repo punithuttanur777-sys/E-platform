@@ -44,42 +44,30 @@ E-platform/
 
 ## Getting Started
 
-### Frontend
+**One command, one URL.**
+
+### Run everything
 
 ```bash
-cd frontend
-npm install
+npm run install:all   # First time only
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Then open: **http://localhost:3000**
 
-### Backend API
+The backend runs on port 8000 in the background. All API requests are proxied through the frontend, so you only need this single link.
 
-```bash
-cd api
-npm install
-# Create .env with OPENAI_API_KEY, MONGODB_URI
-npm run dev
-```
+### Register or Login
 
-API runs at [http://localhost:8000](http://localhost:8000)
-
-### Demo Login
-
-Use any email/password on the login page for a demo experience. The app uses mock data for demonstration.
+Create an account on the register page, or log in with existing credentials.
 
 ## Environment Variables
 
-**Frontend** (`frontend/.env.local`):
-- `OPENAI_API_KEY` - OpenAI API key for AI Tutor (get from https://platform.openai.com/api-keys)
-- `NEXT_PUBLIC_API_URL` - API base URL (default: http://localhost:8000/api)
-
 **Backend** (`api/.env`):
 - `PORT` - API port (default: 8000)
-- `MONGODB_URI` - MongoDB connection string
-- `OPENAI_API_KEY` - OpenAI API key for AI tutor
+- `FRONTEND_URL` - Frontend URL for CORS (default: http://localhost:3000)
 - `JWT_SECRET` - JWT signing secret
+- `OPENAI_API_KEY` - OpenAI API key for AI Tutor (optional; fallback definitions work without it)
 
 ## Development Roadmap
 
