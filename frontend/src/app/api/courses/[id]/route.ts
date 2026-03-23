@@ -1,0 +1,14 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getCourseById } from "@/lib/courses-api-data";
+
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const course = getCourseById(id);
+  if (!course) {
+    return NextResponse.json({ error: "Course not found" }, { status: 404 });
+  }
+  return NextResponse.json(course);
+}

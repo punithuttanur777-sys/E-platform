@@ -8,10 +8,17 @@ import { Button } from "@/components/ui/Button";
 import { VideoPlayer } from "@/components/course/VideoPlayer";
 import { api } from "@/lib/api/client";
 
+interface Lesson {
+  id: string;
+  title: string;
+  duration: number;
+}
+
 export default function LessonPage() {
   const params = useParams();
   const { id: courseId, lessonId } = params;
   const [videoUrl, setVideoUrl] = useState("");
+  const [lessons, setLessons] = useState<Lesson[]>([]);
 
   useEffect(() => {
     api.courses
@@ -19,6 +26,13 @@ export default function LessonPage() {
       .then((lesson) => setVideoUrl(lesson.videoUrl || ""))
       .catch(() => setVideoUrl(""));
   }, [courseId, lessonId]);
+
+  useEffect(() => {
+    api.courses
+      .getLessons(courseId as string)
+      .then((res) => setLessons((res.lessons as Lesson[]) || []))
+      .catch(() => setLessons([]));
+  }, [courseId]);
 
   return (
     <div className="space-y-6">
@@ -81,17 +95,17 @@ export default function LessonPage() {
           <div className="sticky top-6 rounded-xl border border-zinc-200 dark:border-zinc-800 p-6">
             <h3 className="font-semibold mb-4">Lessons</h3>
             <ul className="space-y-2">
-              {[1, 2, 3, 4].map((n) => (
-                <li key={n}>
+              {(lessons.length > 0 ? lessons : [{ id: "1", title: "Lesson 1", duration: 10 }, { id: "2", title: "Lesson 2", duration: 15 }, { id: "3", title: "Lesson 3", duration: 12 }, { id: "4", title: "Lesson 4", duration: 18 }]).map((l) => (
+                <li key={l.id}>
                   <Link
-                    href={`/courses/${courseId}/lessons/${n}`}
+                    href={`/courses/${courseId}/lessons/${l.id}`}
                     className={`block rounded-lg px-3 py-2 text-sm ${
-                      String(n) === lessonId
+                      String(l.id) === lessonId
                         ? "bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-medium"
                         : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
                     }`}
                   >
-                    Lesson {n}
+                    {l.title}
                   </Link>
                 </li>
               ))}
