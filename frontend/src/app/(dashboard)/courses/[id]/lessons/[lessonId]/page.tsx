@@ -30,7 +30,7 @@ export default function LessonPage() {
   useEffect(() => {
     api.courses
       .getLessons(courseId as string)
-      .then((res) => setLessons((res.lessons as Lesson[]) || []))
+      .then((res) => setLessons((res.lessons as unknown as Lesson[]) || []))
       .catch(() => setLessons([]));
   }, [courseId]);
 
